@@ -6,26 +6,41 @@ import (
 	"github.com/rs/xid"
 	"os/exec"
 	"regexp"
+	"strings"
 )
-func InitContainer(key string, c *gocache.Cache) (error) {
-	xid := xid.New().String()
+func (cs *SliceContainer)InitContainer(key string) (error) {
 
-	var slice *SliceContainer = &SliceContainer{}
-	value, found := c.Get(key)
+	//docker ps -a -q  --filter ancestor="compiler-go"
+
+	out, err := exec.Command("docker", "ps", "-a", "--format", "{{.Names}}", "--filter", "ancestor=compiler-go").Output()
+	if err != nil {
+		return err
+	}
+	fmt.Printf("string %#v  ", string(out))
+	result := strings.Split(string(out), "\n")
+	fmt.Printf("result %#v  ", result)
+	fmt.Printf("len %#v  ", len(result))
+
+	var slice *SliceContainer = &SliceContainer{items:result}
+	cs.Cache.Set(key, slice, gocache.DefaultExpiration)
+
+
+	value, found := cs.Cache.Get(key)
 	if found {
 		slice = value.(*SliceContainer)
+		fmt.Println("slice ", slice)
 	}
 
 
 	numberContainer := len(slice.items)
 	for numberContainer < 5 {
+		xid := xid.New().String()
 		isExist ,err := CreateContainer(xid)
 		if !isExist && err == nil {
 			slice.items = append(slice.items, xid)
-			c.Set(key, slice, gocache.DefaultExpiration)
+			cs.Cache.Set(key, slice, gocache.DefaultExpiration)
 			numberContainer += 1
 			fmt.Println("Created Container")
-			fmt.Println(slice)
 		}
 	}
 

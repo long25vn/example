@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"net/http"
 	"sync"
 	"time"
 	gocache "github.com/patrickmn/go-cache"
@@ -28,10 +29,13 @@ func (cs *SliceContainer) Append(item string) string {
 func (cs *SliceContainer) GetFirstContainer() string {
 	cs.Lock()
 	defer cs.Unlock()
+	fmt.Println("len SliceContainer", len(cs.items))
 
 	if len(cs.items) > 0 {
 		first := cs.items[0]
 		cs.items = cs.items[1:]
+		fmt.Println("len SliceContainer", len(cs.items))
+		fmt.Println("first", first)
 		return first
 	}
 	return ""
@@ -43,23 +47,29 @@ func main() {
 	conf.Cache = gocache.New(5*time.Minute, 10*time.Minute)
 	key := "arrayContainer"
 
-	InitContainer(key, conf.Cache)
+	conf.InitContainer(key)
 
 	content := `
-        package main\n
-        import "fmt"\n
-        func main() {\n
-            sum := 0\n
-            for i := 0; i < 10; i++ {\n
-                sum += i\n
-            }\n
-            fmt.Println(sum)\n
+        package main
+        import "fmt"
+        func main() {
+            sum := 0
+            for i := 0; i < 10; i++ {
+                sum += i
+            }
+            fmt.Println(sum)
         }`
+
+	fmt.Println("-------")
+	fmt.Println(conf.items)
 
 	r := gin.Default()
 
 	r.GET("/ping", func(c *gin.Context) {
 		conf.HandlerRequest(content, key)
+	})
+	r.GET("/pong", func(c *gin.Context) {
+		c.String(http.StatusOK, "pong")
 	})
 	r.Run()
 }
