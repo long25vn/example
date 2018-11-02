@@ -26,16 +26,22 @@ func (cs *SliceContainer) Append(item string) string {
 	return first
 }
 
-func (cs *SliceContainer) GetFirstContainer() string {
+func (cs *SliceContainer) GetFirstContainer(key string) string {
 	cs.Lock()
 	defer cs.Unlock()
 	fmt.Println("len SliceContainer", len(cs.items))
 
-	if len(cs.items) > 0 {
-		first := cs.items[0]
-		cs.items = cs.items[1:]
-		fmt.Println("len SliceContainer", len(cs.items))
-		fmt.Println("first", first)
+	var slice  *SliceContainer
+	value, found := cs.Cache.Get(key)
+	if found {
+		slice = value.(*SliceContainer)
+		fmt.Println("slice ", slice)
+	}
+
+	if len(slice.items) > 0 {
+		first := slice.items[0]
+		slice.items = slice.items[1:]
+		cs.Cache.Set(key, slice, gocache.DefaultExpiration)
 		return first
 	}
 	return ""
