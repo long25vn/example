@@ -1,0 +1,91 @@
+[{
+  "name": "superroot",
+  "type": "file",
+  "content": "func main",
+  "elements": [
+    {
+      "name": "main.go",
+      "type": "file",
+      "content": "func main"
+    },
+    {
+      "name": "root",
+      "type": "folder",
+      "content": "func main",
+      "elements": [
+        {
+          "name": "main1.go",
+          "type": "file",
+          "content": "func main"
+        },
+        {
+          "name": "main2.go",
+          "type": "file",
+          "content": "func main"
+        },
+        {
+          "name": "sub",
+          "type": "folder",
+          "content": "func main",
+          "elements": []
+        }
+      ]
+    },
+    {
+      "name": "main0.go",
+      "type": "file",
+      "content": "func main"
+    },
+    {
+      "name": "main01.go",
+      "type": "file",
+      "content": "func main"
+    }
+  ]
+},
+  {
+    "name": "superroot02",
+    "type": "folder",
+    "content": "func main",
+    "elements": [
+      {
+        "name": "main.go",
+        "type": "file",
+        "content": "func main"
+      },
+      {
+        "name": "root",
+        "type": "folder",
+        "content": "func main",
+        "elements": [
+          {
+            "name": "main1.go",
+            "type": "file",
+            "content": "func main"
+          },
+          {
+            "name": "main2.go",
+            "type": "file",
+            "content": "func main"
+          },
+          {
+            "name": "sub",
+            "type": "folder",
+            "content": "func main",
+            "elements": []
+          }
+        ]
+      },
+      {
+        "name": "main0.go",
+        "type": "file",
+        "content": "func main"
+      },
+      {
+        "name": "main01.go",
+        "type": "file",
+        "content": "func main"
+      }
+    ]
+  }
+]
